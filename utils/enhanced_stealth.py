@@ -1127,9 +1127,9 @@ class ProxyManager:
             ))
 
         test_urls = [
-            "http://www.gstatic.com/generate_204",  # Google 连接测试
-            "http://cp.cloudflare.com",             # Cloudflare 连接测试
-            "http://www.msftconnecttest.com/connecttest.txt",  # Microsoft 连接测试
+            "https://www.gstatic.com/generate_204",  # Google 连接测试（改用 HTTPS）
+            "https://cp.cloudflare.com",             # Cloudflare 连接测试（改用 HTTPS）
+            "https://www.google.com",                # Google 主页（HTTPS）
         ]
 
         for test_url in test_urls:
@@ -1144,9 +1144,9 @@ class ProxyManager:
                         logger.info(f"✅ 代理连接测试成功: {proxy_config['server']} (via {test_url})")
                         return True
             except asyncio.TimeoutError:
-                logger.debug(f"⏱️ 代理测试超时: {test_url}")
+                logger.info(f"⏱️ 代理测试超时: {test_url}")
             except Exception as e:
-                logger.debug(f"⚠️ 代理测试失败 ({test_url}): {type(e).__name__}")
+                logger.info(f"⚠️ 代理测试失败 ({test_url}): {type(e).__name__}: {str(e)[:120]}")
 
         logger.warning(f"❌ 代理不可用: {proxy_config['server']} (所有测试 URL 均失败)")
         return False
