@@ -520,6 +520,15 @@ class Authenticator(ABC):
                 error = f"用户信息 API 返回 HTTP {status}"
                 if message:
                     error += f": {message}"
+                # 诊断：失败时输出响应体片段与 content-type，定位非 JSON 拦截页
+                try:
+                    logger.error(
+                        f"🔎 [诊断] 用户信息API status={status} "
+                        f"contentType={result.get('contentType')} "
+                        f"body={str(data)[:300]}"
+                    )
+                except Exception:
+                    pass
             else:
                 error = result.get("error") or "用户信息 API 请求失败"
 
