@@ -92,6 +92,7 @@ jobs:
               url: ${SUBSCRIPTION_URL}
               interval: 3600
               path: ./subscription.yaml
+              filter: "香港|HK"
               health-check:
                 enable: true
                 interval: 300
