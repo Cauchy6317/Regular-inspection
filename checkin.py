@@ -1,12 +1,4 @@
-                # 步骤 1: 获取 WAF cookies
-                # AgentRouter 同样受阿里云 WAF(acw_tc/acw_sc__v2)保护，
-                # 无头 CI 环境跳过会导致 API 返回 JS 挑战页(HTTP 200 但非 JSON)，
-                # 因此所有 Provider 统一获取 WAF cookies。
-                waf_cookies = await self._get_waf_cookies(page, context)
-                if not waf_cookies:
-                    self.logger.warning(
-                        f"⚠️ [{self.account.name}] 未获取到 WAF cookies，继续尝试"
-                    )#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 签到核心模块 - 重构版
 支持多种认证方式和多平台
@@ -343,17 +335,14 @@ class CheckIn:
                 return False, {"error": f"Page creation failed: {str(e)}"}
 
             try:
-                # 步骤 1: 对于 AgentRouter 跳过 WAF cookies
-                waf_cookies = {}
-                if self.provider.name.lower() != "agentrouter":
-                    waf_cookies = await self._get_waf_cookies(page, context)
-                    if not waf_cookies:
-                        self.logger.warning(
-                            f"⚠️ [{self.account.name}] 未获取到 WAF cookies，继续尝试"
-                        )
-                else:
-                    self.logger.info(
-                        f"ℹ️ [{self.account.name}] AgentRouter 不需要 WAF cookies，跳过"
+                # 步骤 1: 获取 WAF cookies
+                # AgentRouter 同样受阿里云 WAF(acw_tc/acw_sc__v2)保护，
+                # 无头 CI 环境跳过会导致 API 返回 JS 挑战页(HTTP 200 但非 JSON)，
+                # 因此所有 Provider 统一获取 WAF cookies。
+                waf_cookies = await self._get_waf_cookies(page, context)
+                if not waf_cookies:
+                    self.logger.warning(
+                        f"⚠️ [{self.account.name}] 未获取到 WAF cookies，继续尝试"
                     )
 
                 # 步骤 1.5: 可选的人类行为模拟（支持全局和按认证方式定制）
