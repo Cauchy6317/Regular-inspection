@@ -1132,10 +1132,18 @@ class ProxyManager:
             "https://www.google.com",                # Google 主页（HTTPS）
         ]
 
+        # httpx 0.28+ 移除了 proxies 参数，改用 proxy。
+        # 通过反射选择当前版本支持的关键字，避免 TypeError 导致代理测试永远失败。
+        import inspect
+        supports_proxy = "proxy" in inspect.signature(httpx.AsyncClient.__init__).parameters
+        proxy_kwargs = {"proxy": proxy_url} if supports_proxy else {
+            "proxies": {"http://": proxy_url, "https://": proxy_url}
+        }
+
         for test_url in test_urls:
             try:
                 async with httpx.AsyncClient(
-                    proxies={"http://": proxy_url, "https://": proxy_url},
+                    **proxy_kwargs,
                     timeout=timeout,
                     follow_redirects=True
                 ) as client:

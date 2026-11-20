@@ -280,8 +280,14 @@ class NodeSpeedTester:
 
             start_time = time.time()
 
+            # httpx 0.28+ 移除 proxies 参数改用 proxy；反射选择当前版本支持的写法
+            import inspect
+            supports_proxy = "proxy" in inspect.signature(httpx.AsyncClient.__init__).parameters
+            proxy_kwargs = {"proxy": proxy_url} if supports_proxy else {
+                "proxies": {"http://": proxy_url, "https://": proxy_url}
+            }
             async with httpx.AsyncClient(
-                proxies={"http://": proxy_url, "https://": proxy_url},
+                **proxy_kwargs,
                 timeout=self.timeout,
                 follow_redirects=True
             ) as client:
